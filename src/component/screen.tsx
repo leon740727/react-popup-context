@@ -9,7 +9,7 @@ export default function ({width, height, active, children}: {
 }) {
     const complement: React.CSSProperties = {
         width: children instanceof Array ? `${children.length*100}%` : '100%',
-        left: `${-1 * active * 100}%`,
+        left: active === -1 ? '0%' : `${-1 * active * 100}%`,
     }
 
     return (

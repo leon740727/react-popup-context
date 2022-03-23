@@ -29849,7 +29849,7 @@ const React = __importStar(__webpack_require__(/*! react */ "./node_modules/reac
 function default_1({ width, height, active, children }) {
     const complement = {
         width: children instanceof Array ? `${children.length * 100}%` : '100%',
-        left: `${-1 * active * 100}%`,
+        left: active === -1 ? '0%' : `${-1 * active * 100}%`,
     };
     return (React.createElement("div", { style: Object.assign(Object.assign({}, style), { width, height }) },
         React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement) }, children)));
