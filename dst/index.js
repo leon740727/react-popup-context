@@ -42,7 +42,7 @@ Object.defineProperty(exports, "Section", { enumerable: true, get: function () {
  * 例如: `html, body, #root { height: 100%; }`
  */
 class PanelContext {
-    constructor(setSections, setIndex, _sections = [], _active = -1) {
+    constructor(setSections, setIndex, _sections = [React.createElement(React.Fragment, null)], _active = 0) {
         this.setSections = setSections;
         this.setIndex = setIndex;
         this._sections = _sections;
@@ -62,11 +62,6 @@ class PanelContext {
         this._active = index;
         this.setIndex(index);
     }
-    init(children) {
-        if (this.sections.length === 0) {
-            this.popup(children);
-        }
-    }
     popup(children) {
         const newbie = React.createElement(section_1.default, { key: this.active + 1 }, children);
         this.sections = this.sections.slice(0, this.active + 1).concat([newbie]);
@@ -80,10 +75,12 @@ class PanelContext {
 }
 exports.PanelContext = PanelContext;
 function Panel({ width, height, children }) {
-    const [sections, setSections] = (0, react_1.useState)([]);
-    const [active, setActive] = (0, react_1.useState)(-1);
+    const [sections, setSections] = (0, react_1.useState)([React.createElement(React.Fragment, null)]);
+    const [active, setActive] = (0, react_1.useState)(0);
     const ctx = (0, react_1.useRef)(new PanelContext(setSections, setActive));
-    (0, react_1.useEffect)(() => ctx.current.init(children(ctx.current)), []);
-    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, sections));
+    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, (() => {
+        const section1 = React.createElement(section_1.default, { key: 0 }, children(ctx.current));
+        return [section1].concat(sections.slice(1));
+    })()));
 }
 exports.Panel = Panel;

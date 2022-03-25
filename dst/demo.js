@@ -36,20 +36,24 @@ const React = __importStar(require("react"));
 const react_1 = require("react");
 const react_dom_1 = require("react-dom");
 const index_1 = require("./index");
-function OrderList({ panel }) {
+function OrderList({ panel, now }) {
     const [orders, setOrders] = (0, react_1.useState)([
         { id: '1', items: ['國'] },
         { id: '2', items: ['國'] },
         { id: '3', items: ['國'] },
     ]);
-    return (React.createElement(React.Fragment, null, orders.map(o => React.createElement("div", { key: o.id, onClick: () => __awaiter(this, void 0, void 0, function* () {
-            const ord = yield popup(o);
-            setOrders(orders => amend(orders, o => o.id === ord.id, ord));
-        }) },
-        "order ",
-        o.id,
-        " -- ",
-        o.items.join(', ')))));
+    return (React.createElement(React.Fragment, null,
+        React.createElement("div", null,
+            "now: ",
+            now.toLocaleString()),
+        orders.map(o => React.createElement("div", { key: o.id, onClick: () => __awaiter(this, void 0, void 0, function* () {
+                const ord = yield popup(o);
+                setOrders(orders => amend(orders, o => o.id === ord.id, ord));
+            }) },
+            "order ",
+            o.id,
+            " -- ",
+            o.items.join(', ')))));
     function popup(order) {
         return new Promise((resolve, reject) => {
             const o = React.createElement(Order, { key: order.id, panel: panel, defaultValue: order, onDone: items => {
@@ -93,6 +97,10 @@ function ItemPicker({ panel, onSelect }) {
             } }, it))));
 }
 function App() {
-    return (React.createElement(index_1.Panel, { width: '100%', height: '100%' }, ctx => React.createElement(OrderList, { panel: ctx })));
+    const [now, setNow] = (0, react_1.useState)(new Date());
+    (0, react_1.useEffect)(() => {
+        setInterval(() => setNow(new Date()), 1000);
+    }, []);
+    return (React.createElement(index_1.Panel, { width: '100%', height: '100%' }, ctx => React.createElement(OrderList, { panel: ctx, now: now })));
 }
 (0, react_dom_1.render)(React.createElement(App, null), document.getElementById('root'));
