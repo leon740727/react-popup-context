@@ -21,20 +21,20 @@ export class PanelContext {
         private _active: number = 0,
     ) {}
 
-    get sections() {
+    private get sections() {
         return this._sections;
     }
 
-    set sections(sections: JSX.Element[]) {
+    private set sections(sections: JSX.Element[]) {
         this._sections = sections;
         this.setSections(sections);
     }
 
-    get active() {
+    private get active() {
         return this._active;
     }
 
-    set active(index: number) {
+    private set active(index: number) {
         this._active = index;
         this.setIndex(index);
     }

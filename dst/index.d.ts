@@ -13,10 +13,10 @@ export declare class PanelContext {
     private _sections;
     private _active;
     constructor(setSections: (sections: JSX.Element[]) => void, setIndex: (index: number) => void, _sections?: JSX.Element[], _active?: number);
-    get sections(): JSX.Element[];
-    set sections(sections: JSX.Element[]);
-    get active(): number;
-    set active(index: number);
+    private get sections();
+    private set sections(value);
+    private get active();
+    private set active(value);
     popup(children: children): void;
     close(): void;
 }
