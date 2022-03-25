@@ -29849,7 +29849,7 @@ const React = __importStar(__webpack_require__(/*! react */ "./node_modules/reac
 function default_1({ width, height, active, children }) {
     const complement = {
         width: children instanceof Array ? `${children.length * 100}%` : '100%',
-        left: active === -1 ? '0%' : `${-1 * active * 100}%`,
+        left: `${-1 * active * 100}%`,
     };
     return (React.createElement("div", { style: Object.assign(Object.assign({}, style), { width, height }) },
         React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement) }, children)));
@@ -29957,20 +29957,24 @@ const React = __importStar(__webpack_require__(/*! react */ "./node_modules/reac
 const react_1 = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const react_dom_1 = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 const index_1 = __webpack_require__(/*! ./index */ "./src/index.tsx");
-function OrderList({ panel }) {
+function OrderList({ panel, now }) {
     const [orders, setOrders] = (0, react_1.useState)([
         { id: '1', items: ['國'] },
         { id: '2', items: ['國'] },
         { id: '3', items: ['國'] },
     ]);
-    return (React.createElement(React.Fragment, null, orders.map(o => React.createElement("div", { key: o.id, onClick: () => __awaiter(this, void 0, void 0, function* () {
-            const ord = yield popup(o);
-            setOrders(orders => amend(orders, o => o.id === ord.id, ord));
-        }) },
-        "order ",
-        o.id,
-        " -- ",
-        o.items.join(', ')))));
+    return (React.createElement(React.Fragment, null,
+        React.createElement("div", null,
+            "now: ",
+            now.toLocaleString()),
+        orders.map(o => React.createElement("div", { key: o.id, onClick: () => __awaiter(this, void 0, void 0, function* () {
+                const ord = yield popup(o);
+                setOrders(orders => amend(orders, o => o.id === ord.id, ord));
+            }) },
+            "order ",
+            o.id,
+            " -- ",
+            o.items.join(', ')))));
     function popup(order) {
         return new Promise((resolve, reject) => {
             const o = React.createElement(Order, { key: order.id, panel: panel, defaultValue: order, onDone: items => {
@@ -30014,7 +30018,11 @@ function ItemPicker({ panel, onSelect }) {
             } }, it))));
 }
 function App() {
-    return (React.createElement(index_1.Panel, { width: '100%', height: '100%' }, ctx => React.createElement(OrderList, { panel: ctx })));
+    const [now, setNow] = (0, react_1.useState)(new Date());
+    (0, react_1.useEffect)(() => {
+        setInterval(() => setNow(new Date()), 1000);
+    }, []);
+    return (React.createElement(index_1.Panel, { width: '100%', height: '100%' }, ctx => React.createElement(OrderList, { panel: ctx, now: now })));
 }
 (0, react_dom_1.render)(React.createElement(App, null), document.getElementById('root'));
 
@@ -30071,7 +30079,7 @@ Object.defineProperty(exports, "Section", ({ enumerable: true, get: function () 
  * 例如: `html, body, #root { height: 100%; }`
  */
 class PanelContext {
-    constructor(setSections, setIndex, _sections = [], _active = -1) {
+    constructor(setSections, setIndex, _sections = [React.createElement(React.Fragment, null)], _active = 0) {
         this.setSections = setSections;
         this.setIndex = setIndex;
         this._sections = _sections;
@@ -30091,11 +30099,6 @@ class PanelContext {
         this._active = index;
         this.setIndex(index);
     }
-    init(children) {
-        if (this.sections.length === 0) {
-            this.popup(children);
-        }
-    }
     popup(children) {
         const newbie = React.createElement(section_1.default, { key: this.active + 1 }, children);
         this.sections = this.sections.slice(0, this.active + 1).concat([newbie]);
@@ -30109,11 +30112,13 @@ class PanelContext {
 }
 exports.PanelContext = PanelContext;
 function Panel({ width, height, children }) {
-    const [sections, setSections] = (0, react_1.useState)([]);
-    const [active, setActive] = (0, react_1.useState)(-1);
+    const [sections, setSections] = (0, react_1.useState)([React.createElement(React.Fragment, null)]);
+    const [active, setActive] = (0, react_1.useState)(0);
     const ctx = (0, react_1.useRef)(new PanelContext(setSections, setActive));
-    (0, react_1.useEffect)(() => ctx.current.init(children(ctx.current)), []);
-    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, sections));
+    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, (() => {
+        const section1 = React.createElement(section_1.default, { key: 0 }, children(ctx.current));
+        return [section1].concat(sections.slice(1));
+    })()));
 }
 exports.Panel = Panel;
 

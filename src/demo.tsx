@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import { Panel, PanelContext } from './index';
 
@@ -11,8 +11,9 @@ type order = {
 type child = JSX.Element | string;
 type children = child | child[];
 
-function OrderList ({panel}: {
+function OrderList ({panel, now}: {
     panel: PanelContext,
+    now: Date,
 }) {
     const [orders, setOrders] = useState([
         {id: '1', items: ['國']},
@@ -22,6 +23,7 @@ function OrderList ({panel}: {
 
     return (
     <>
+        <div>now: {now.toLocaleString()}</div>
         {orders.map(o => 
             <div key={o.id}
                 onClick={async () => {
@@ -93,9 +95,14 @@ function ItemPicker({panel, onSelect}: {
 }
 
 function App() {
+    const [now, setNow] = useState(new Date());
+    useEffect(() => {
+        setInterval(() => setNow(new Date()), 1000);
+    }, []);
+
     return (
     <Panel width='100%' height='100%'>
-        {ctx => <OrderList panel={ctx}/>}
+        {ctx => <OrderList panel={ctx} now={now}/>}
     </Panel>);
 }
 

@@ -17,7 +17,6 @@ export declare class PanelContext {
     set sections(sections: JSX.Element[]);
     get active(): number;
     set active(index: number);
-    init(children: children): void;
     popup(children: children): void;
     close(): void;
 }

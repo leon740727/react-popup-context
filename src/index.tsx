@@ -17,8 +17,8 @@ export class PanelContext {
     constructor(
         private setSections: (sections: JSX.Element[]) => void,
         private setIndex: (index: number) => void,
-        private _sections: JSX.Element[] = [],
-        private _active: number = -1,
+        private _sections: JSX.Element[] = [<></>],
+        private _active: number = 0,
     ) {}
 
     get sections() {
@@ -39,12 +39,6 @@ export class PanelContext {
         this.setIndex(index);
     }
 
-    init(children: children) {
-        if (this.sections.length === 0) {
-            this.popup(children);
-        }
-    }
-
     popup(children: children) {
         const newbie = <Section key={this.active + 1}>{children}</Section>;
         this.sections = this.sections.slice(0, this.active + 1).concat([newbie]);
@@ -63,15 +57,16 @@ export function Panel({width, height, children}: {
     height: string,
     children: (ctx: PanelContext) => children,
 }) {
-    const [sections, setSections] = useState<JSX.Element[]>([]);
-    const [active, setActive] = useState(-1);
+    const [sections, setSections] = useState<JSX.Element[]>([<></>]);
+    const [active, setActive] = useState(0);
     const ctx = useRef(new PanelContext(setSections, setActive));
     
-    useEffect(() => ctx.current.init(children(ctx.current)), []);
-
     return (
     <Screen width={width} height={height} active={active}>
-        {sections}
+        {(() => {
+            const section1 = <Section key={0}>{children(ctx.current)}</Section>;
+            return [section1].concat(sections.slice(1));
+        })()}
     </Screen>);
 }
 
