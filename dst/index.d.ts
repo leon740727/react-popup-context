@@ -18,6 +18,7 @@ export declare class PanelContext {
     private get active();
     private set active(value);
     popup(children: children): void;
+    _close(): void;
     close(): void;
 }
 export declare function Panel({ width, height, children }: {

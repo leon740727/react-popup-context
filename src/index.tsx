@@ -43,12 +43,18 @@ export class PanelContext {
         const newbie = <Section key={this.active + 1}>{children}</Section>;
         this.sections = this.sections.slice(0, this.active + 1).concat([newbie]);
         this.active = this.active + 1;
+
+        window.history.pushState({active: this.active}, '', null);
     }
 
-    close() {
+    _close() {
         if (this.active > 0) {
             this.active = this.active - 1;
         }
+    }
+
+    close() {
+        window.history.back();
     }
 }
 
@@ -61,6 +67,15 @@ export function Panel({width, height, children}: {
     const [active, setActive] = useState(0);
     const ctx = useRef(new PanelContext(setSections, setActive));
     
+    useEffect(() => {
+        window.history.replaceState({active: 0}, '', null);
+        window.addEventListener('popstate', e => {
+            if (state.isa(e.state)) {
+                ctx.current._close();
+            }
+        });
+    }, []);
+    
     return (
     <Screen width={width} height={height} active={active}>
         {(() => {
@@ -68,6 +83,16 @@ export function Panel({width, height, children}: {
             return [section1].concat(sections.slice(1));
         })()}
     </Screen>);
+}
+
+type state = {
+    active: number;
+}
+
+namespace state {
+    export function isa(state: any): state is state {
+        return state && typeof state.active === 'number';
+    }
 }
 
 type child = JSX.Element | string;

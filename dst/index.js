@@ -66,11 +66,15 @@ class PanelContext {
         const newbie = React.createElement(section_1.default, { key: this.active + 1 }, children);
         this.sections = this.sections.slice(0, this.active + 1).concat([newbie]);
         this.active = this.active + 1;
+        window.history.pushState({ active: this.active }, '', null);
     }
-    close() {
+    _close() {
         if (this.active > 0) {
             this.active = this.active - 1;
         }
+    }
+    close() {
+        window.history.back();
     }
 }
 exports.PanelContext = PanelContext;
@@ -78,9 +82,24 @@ function Panel({ width, height, children }) {
     const [sections, setSections] = (0, react_1.useState)([React.createElement(React.Fragment, null)]);
     const [active, setActive] = (0, react_1.useState)(0);
     const ctx = (0, react_1.useRef)(new PanelContext(setSections, setActive));
+    (0, react_1.useEffect)(() => {
+        window.history.replaceState({ active: 0 }, '', null);
+        window.addEventListener('popstate', e => {
+            if (state.isa(e.state)) {
+                ctx.current._close();
+            }
+        });
+    }, []);
     return (React.createElement(screen_1.default, { width: width, height: height, active: active }, (() => {
         const section1 = React.createElement(section_1.default, { key: 0 }, children(ctx.current));
         return [section1].concat(sections.slice(1));
     })()));
 }
 exports.Panel = Panel;
+var state;
+(function (state_1) {
+    function isa(state) {
+        return state && typeof state.active === 'number';
+    }
+    state_1.isa = isa;
+})(state || (state = {}));
