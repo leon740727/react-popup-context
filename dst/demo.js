@@ -92,9 +92,17 @@ function ItemPicker({ panel, onSelect }) {
     const items = ['國', '英', '數'];
     return (React.createElement(React.Fragment, null,
         React.createElement("div", null, "\u65B0\u589E\u7522\u54C1"),
-        items.map((it, i) => React.createElement("div", { key: i, onClick: () => {
-                onSelect(it);
-            } }, it))));
+        (() => {
+            return items.map(i => {
+                return (React.createElement("div", { key: i },
+                    React.createElement("input", { type: 'checkbox', onChange: e => {
+                            if (e.target.checked) {
+                                onSelect(i);
+                            }
+                        } }),
+                    i));
+            });
+        })()));
 }
 function App() {
     const [now, setNow] = (0, react_1.useState)(new Date());

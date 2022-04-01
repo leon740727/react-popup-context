@@ -90,7 +90,10 @@ function Panel({ width, height, children }) {
             }
         });
     }, []);
-    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, (() => {
+    function trimSections() {
+        setSections(sections => sections.slice(0, active + 1));
+    }
+    return (React.createElement(screen_1.default, { width: width, height: height, active: active, onTransitionEnd: trimSections }, (() => {
         const section1 = React.createElement(section_1.default, { key: 0 }, children(ctx.current));
         return [section1].concat(sections.slice(1));
     })()));

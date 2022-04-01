@@ -29846,13 +29846,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 /** 最外層的像電視螢幕的框，只顯示出其中一個 Section */
-function default_1({ width, height, active, children }) {
+function default_1({ width, height, active, children, onTransitionEnd }) {
     const complement = {
         width: children instanceof Array ? `${children.length * 100}%` : '100%',
         left: `${-1 * active * 100}%`,
     };
     return (React.createElement("div", { style: Object.assign(Object.assign({}, style), { width, height }) },
-        React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement) }, children)));
+        React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement), onTransitionEnd: onTransitionEnd }, children)));
 }
 exports["default"] = default_1;
 const style = {
@@ -30013,9 +30013,17 @@ function ItemPicker({ panel, onSelect }) {
     const items = ['國', '英', '數'];
     return (React.createElement(React.Fragment, null,
         React.createElement("div", null, "\u65B0\u589E\u7522\u54C1"),
-        items.map((it, i) => React.createElement("div", { key: i, onClick: () => {
-                onSelect(it);
-            } }, it))));
+        (() => {
+            return items.map(i => {
+                return (React.createElement("div", { key: i },
+                    React.createElement("input", { type: 'checkbox', onChange: e => {
+                            if (e.target.checked) {
+                                onSelect(i);
+                            }
+                        } }),
+                    i));
+            });
+        })()));
 }
 function App() {
     const [now, setNow] = (0, react_1.useState)(new Date());
@@ -30127,7 +30135,10 @@ function Panel({ width, height, children }) {
             }
         });
     }, []);
-    return (React.createElement(screen_1.default, { width: width, height: height, active: active }, (() => {
+    function trimSections() {
+        setSections(sections => sections.slice(0, active + 1));
+    }
+    return (React.createElement(screen_1.default, { width: width, height: height, active: active, onTransitionEnd: trimSections }, (() => {
         const section1 = React.createElement(section_1.default, { key: 0 }, children(ctx.current));
         return [section1].concat(sections.slice(1));
     })()));

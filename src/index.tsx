@@ -75,9 +75,13 @@ export function Panel({width, height, children}: {
             }
         });
     }, []);
-    
+
+    function trimSections() {
+        setSections(sections => sections.slice(0, active+1));
+    }
+
     return (
-    <Screen width={width} height={height} active={active}>
+    <Screen width={width} height={height} active={active} onTransitionEnd={trimSections}>
         {(() => {
             const section1 = <Section key={0}>{children(ctx.current)}</Section>;
             return [section1].concat(sections.slice(1));

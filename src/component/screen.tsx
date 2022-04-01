@@ -1,11 +1,12 @@
 import * as React from 'react';
 
 /** 最外層的像電視螢幕的框，只顯示出其中一個 Section */
-export default function ({width, height, active, children}: {
+export default function ({width, height, active, children, onTransitionEnd}: {
     width: string,
     height: string,
     active: number,
     children: children,
+    onTransitionEnd: () => void,
 }) {
     const complement: React.CSSProperties = {
         width: children instanceof Array ? `${children.length*100}%` : '100%',
@@ -15,7 +16,7 @@ export default function ({width, height, active, children}: {
     return (
     <div style={{...style, width, height}}>
         {/* 在 screen 底下長長的畫布，可以左右移動以顯示不同的 section */}
-        <div style={{...sectionListStyle, ...complement}}>
+        <div style={{...sectionListStyle, ...complement}} onTransitionEnd={onTransitionEnd}>
             {children}
         </div>
     </div>);

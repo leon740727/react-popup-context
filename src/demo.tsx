@@ -88,9 +88,18 @@ function ItemPicker({panel, onSelect}: {
     return (
     <>
         <div>新增產品</div>
-        {items.map((it, i) => <div key={i} onClick={() => {
-            onSelect(it);
-        }}>{it}</div>)}
+        {(() => {
+            return items.map(i => {
+                return (
+                <div key={i}>
+                    <input type='checkbox' onChange={e => {
+                        if (e.target.checked) {
+                            onSelect(i)
+                        }
+                    }}/>{i}
+                </div>);
+            })
+        })()}
     </>);
 }
 

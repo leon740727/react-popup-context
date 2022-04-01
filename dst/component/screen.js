@@ -25,13 +25,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(require("react"));
 /** 最外層的像電視螢幕的框，只顯示出其中一個 Section */
-function default_1({ width, height, active, children }) {
+function default_1({ width, height, active, children, onTransitionEnd }) {
     const complement = {
         width: children instanceof Array ? `${children.length * 100}%` : '100%',
         left: `${-1 * active * 100}%`,
     };
     return (React.createElement("div", { style: Object.assign(Object.assign({}, style), { width, height }) },
-        React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement) }, children)));
+        React.createElement("div", { style: Object.assign(Object.assign({}, sectionListStyle), complement), onTransitionEnd: onTransitionEnd }, children)));
 }
 exports.default = default_1;
 const style = {
